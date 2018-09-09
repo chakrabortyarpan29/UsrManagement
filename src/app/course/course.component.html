@@ -1,8 +1,8 @@
-<div class="course">
+<div class="group">
 
-    <h2>{{course?.description}}</h2>
+    <h2>{{group?.description}}</h2>
 
-    <img class="course-thumbnail" [src]="course?.iconUrl">
+    <img class="group-thumbnail" [src]="group?.iconUrl">
 
     <mat-form-field>
 
@@ -16,32 +16,32 @@
 
     </div>
 
-    <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource"
+    <mat-table class="users-table mat-elevation-z8" [dataSource]="dataSource"
                matSort matSortActive="seqNo" matSortDirection="asc" matSortDisableClear>
 
-        <ng-container matColumnDef="seqNo">
+        <ng-container matColumnDef="id">
 
-            <mat-header-cell *matHeaderCellDef mat-sort-header>#</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
 
-            <mat-cell *matCellDef="let lesson">{{lesson.seqNo}}</mat-cell>
+            <mat-cell *matCellDef="let user">{{user.id}}</mat-cell>
 
         </ng-container>
 
-        <ng-container matColumnDef="description">
+        <ng-container matColumnDef="userName">
 
-            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
 
             <mat-cell class="description-cell"
-                      *matCellDef="let lesson">{{lesson.description}}</mat-cell>
+                      *matCellDef="let user">{{user.userName}}</mat-cell>
 
         </ng-container>
 
-        <ng-container matColumnDef="duration">
+        <ng-container matColumnDef="role">
 
-            <mat-header-cell *matHeaderCellDef>Duration</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>Role</mat-header-cell>
 
             <mat-cell class="duration-cell"
-                      *matCellDef="let lesson">{{lesson.duration}}</mat-cell>
+                      *matCellDef="let user">{{user.role}}</mat-cell>
 
         </ng-container>
 
@@ -52,7 +52,7 @@
     </mat-table>
 
 
-    <mat-paginator [length]="course?.lessonsCount" [pageSize]="3"
+    <mat-paginator [length]="group?.lessonsCount" [pageSize]="3"
                    [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
 
 

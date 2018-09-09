@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {DataService} from '../services/data.service';
 import {HttpClient} from '@angular/common/http';
 import {MatDialog, MatPaginator, MatSort} from '@angular/material';
-import {Issue} from '../models/issue';
+import {User} from '../model/user';
 import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {DataSource} from '@angular/cdk/collections';
@@ -21,7 +21,7 @@ import {DeleteDialogComponent} from '../dialogs/delete/delete.dialog.component';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
-  displayedColumns = ['id', 'title', 'state', 'url', 'created_at', 'updated_at', 'actions'];
+  displayedColumns = ['id', 'userName','email','role', 'created_at','actions'];
   exampleDatabase: DataService | null;
   dataSource: ExampleDataSource | null;
   index: number;
@@ -43,9 +43,9 @@ export class UserComponent implements OnInit {
     this.loadData();
   }
 
-  addNew(issue: Issue) {
+  addNew(user: User) {
     const dialogRef = this.dialog.open(AddDialogComponent, {
-      data: {issue: issue }
+      data: {user:user}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -58,13 +58,13 @@ export class UserComponent implements OnInit {
     });
   }
 
-  startEdit(i: number, id: number, title: string, state: string, url: string, created_at: string, updated_at: string) {
+  startEdit(i: number, id: number, username: string, role: string, email: string, created_at: string) {
     this.id = id;
     // index row is used just for debugging proposes and can be removed
     this.index = i;
     console.log(this.index);
     const dialogRef = this.dialog.open(EditDialogComponent, {
-      data: {id: id, title: title, state: state, url: url, created_at: created_at, updated_at: updated_at}
+      data: {id: id, userName: username, role: role, email: email, creationDate: created_at}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -79,11 +79,11 @@ export class UserComponent implements OnInit {
     });
   }
 
-  deleteItem(i: number, id: number, title: string, state: string, url: string) {
+  deleteItem(i: number, id: number, username: string, role: string, email: string) {
     this.index = i;
     this.id = id;
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      data: {id: id, title: title, state: state, url: url}
+      data: {id: id, userName: username, role: role, email: email}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -130,7 +130,7 @@ export class UserComponent implements OnInit {
 }
 
 
-export class ExampleDataSource extends DataSource<Issue> {
+export class ExampleDataSource extends DataSource<User> {
   _filterChange = new BehaviorSubject('');
 
   get filter(): string {
@@ -141,8 +141,8 @@ export class ExampleDataSource extends DataSource<Issue> {
     this._filterChange.next(filter);
   }
 
-  filteredData: Issue[] = [];
-  renderedData: Issue[] = [];
+  filteredData: User[] = [];
+  renderedData: User[] = [];
 
   constructor(public _exampleDatabase: DataService,
               public _paginator: MatPaginator,
@@ -153,7 +153,7 @@ export class ExampleDataSource extends DataSource<Issue> {
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Issue[]> {
+  connect(): Observable<User[]> {
     // Listen for any changes in the base data, sorting, filtering, or pagination
     const displayDataChanges = [
       this._exampleDatabase.dataChange,
@@ -162,12 +162,12 @@ export class ExampleDataSource extends DataSource<Issue> {
       this._paginator.page
     ];
 
-    this._exampleDatabase.getAllIssues();
+    this._exampleDatabase.getAllUsers();
 
     return Observable.merge(...displayDataChanges).map(() => {
       // Filter data
-      this.filteredData = this._exampleDatabase.data.slice().filter((issue: Issue) => {
-        const searchStr = (issue.id + issue.title + issue.url + issue.created_at).toLowerCase();
+      this.filteredData = this._exampleDatabase.data.slice().filter((user: User) => {
+        const searchStr = (user.id + user.userName + user.role + user.creationDate).toLowerCase();
         return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
       });
 
@@ -186,7 +186,7 @@ export class ExampleDataSource extends DataSource<Issue> {
 
 
   /** Returns a sorted copy of the database data. */
-  sortData(data: Issue[]): Issue[] {
+  sortData(data: User[]): User[] {
     if (!this._sort.active || this._sort.direction === '') {
       return data;
     }
@@ -197,11 +197,10 @@ export class ExampleDataSource extends DataSource<Issue> {
 
       switch (this._sort.active) {
         case 'id': [propertyA, propertyB] = [a.id, b.id]; break;
-        case 'title': [propertyA, propertyB] = [a.title, b.title]; break;
-        case 'state': [propertyA, propertyB] = [a.state, b.state]; break;
-        case 'url': [propertyA, propertyB] = [a.url, b.url]; break;
-        case 'created_at': [propertyA, propertyB] = [a.created_at, b.created_at]; break;
-        case 'updated_at': [propertyA, propertyB] = [a.updated_at, b.updated_at]; break;
+        case 'userName': [propertyA, propertyB] = [a.userName, b.userName]; break;
+        case 'role': [propertyA, propertyB] = [a.role, b.role]; break;
+        case 'created_at': [propertyA, propertyB] = [a.creationDate, b.creationDate]; break;
+        case 'email': [propertyA, propertyB] = [a.email, b.email]; break;
       }
 
       const valueA = isNaN(+propertyA) ? propertyA : +propertyA;

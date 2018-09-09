@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Issue} from '../models/issue';
+import {User} from '../model/user';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class DataService {
-  private readonly API_URL = 'https://api.github.com/repos/angular/angular/issues';
+  private readonly API_URL = 'http://localhost:24369/api/User';
 
-  dataChange: BehaviorSubject<Issue[]> = new BehaviorSubject<Issue[]>([]);
+  dataChange: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   // Temporarily stores data from dialogs
   dialogData: any;
 
   constructor (private httpClient: HttpClient) {}
 
-  get data(): Issue[] {
+  get data(): User[] {
     return this.dataChange.value;
   }
 
@@ -22,8 +22,8 @@ export class DataService {
   }
 
   /** CRUD METHODS */
-  getAllIssues(): void {
-    this.httpClient.get<Issue[]>(this.API_URL).subscribe(data => {
+  getAllUsers(): void {
+    this.httpClient.get<User[]>(this.API_URL).subscribe(data => {
         this.dataChange.next(data);
       },
       (error: HttpErrorResponse) => {
@@ -31,60 +31,37 @@ export class DataService {
       });
   }
 
-  // DEMO ONLY, you can find working methods below
-  addIssue (issue: Issue): void {
-    this.dialogData = issue;
+  addUser (user: User): void {
+    this.dialogData = user;
+    this.httpClient.post(this.API_URL, user).subscribe(data => {
+      this.dialogData = user;
+      alert("Successfully Added User.");
+      },
+      (err: HttpErrorResponse) => {
+        alert(err.message)
+    });
   }
 
-  updateIssue (issue: Issue): void {
-    this.dialogData = issue;
+  updateUser (user: User): void {
+    this.httpClient.put(this.API_URL + user.id, user).subscribe(data => {
+      this.dialogData = user;
+      alert("Successfully Updated User.");
+    },
+    (err: HttpErrorResponse) => {
+      alert(err.message);
+    }
+  );
   }
 
-  deleteIssue (id: number): void {
-    console.log(id);
+  deleteUser (id: number): void {
+    this.httpClient.delete(this.API_URL + id).subscribe(data => {
+      alert("Successfully Deleted User.");
+      },
+      (err: HttpErrorResponse) => {
+        alert(err.message);
+      }
+    );
   }
 }
-
-
-
-/* REAL LIFE CRUD Methods I've used in my projects. ToasterService uses Material Toasts for displaying messages:
-
-    // ADD, POST METHOD
-    addItem(kanbanItem: KanbanItem): void {
-    this.httpClient.post(this.API_URL, kanbanItem).subscribe(data => {
-      this.dialogData = kanbanItem;
-      this.toasterService.showToaster('Successfully added', 3000);
-      },
-      (err: HttpErrorResponse) => {
-      this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
-    });
-   }
-
-    // UPDATE, PUT METHOD
-     updateItem(kanbanItem: KanbanItem): void {
-    this.httpClient.put(this.API_URL + kanbanItem.id, kanbanItem).subscribe(data => {
-        this.dialogData = kanbanItem;
-        this.toasterService.showToaster('Successfully edited', 3000);
-      },
-      (err: HttpErrorResponse) => {
-        this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
-      }
-    );
-  }
-
-  // DELETE METHOD
-  deleteItem(id: number): void {
-    this.httpClient.delete(this.API_URL + id).subscribe(data => {
-      console.log(data['']);
-        this.toasterService.showToaster('Successfully deleted', 3000);
-      },
-      (err: HttpErrorResponse) => {
-        this.toasterService.showToaster('Error occurred. Details: ' + err.name + ' ' + err.message, 8000);
-      }
-    );
-  }
-*/
-
-
 
 

@@ -10,7 +10,7 @@ import {MatCardModule} from '@angular/material/card';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import {MatTabsModule} from '@angular/material/tabs';
-import { CoursesCardListComponent } from './courses-card-list/courses-card-list.component';
+import {GroupListComponent } from './group-list/group-list.component';
 import {CourseComponent} from "./course/course.component";
 import {LoginComponent} from "./login/login.component";
 import {UserComponent} from "./user/user.component";
@@ -35,7 +35,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         HomeComponent,
         AboutComponent,
         CourseComponent,
-        CoursesCardListComponent,
+        GroupListComponent,
         LoginComponent,
         AddDialogComponent,
         EditDialogComponent,
